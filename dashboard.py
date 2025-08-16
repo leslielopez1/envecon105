@@ -24,7 +24,7 @@ def load_data():
     url5 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/cmip6-x0.25_timeseries_tas_timeseries_annual_1950-2014_median_historical_ensemble_all_mean.xlsx"
     mex_temp = pd.read_excel(url5)
     mex_temp = mex_temp.melt(id_vars=['code', 'name'], var_name='Date', value_name='Temperature')
-
+    load_data = load_data()
 
 #creates main section
 header = st.container()
