@@ -401,8 +401,8 @@ with data_analysis:
     scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
     scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
     
-    
-    r = np.corrcoef(scaled_mex['Emissions_scaled'], scaled_mex['Indicator_scaled'])[0,1]
+    df = scaled_mex[['Emissions_scaled', 'Indicator_scaled']].dropna()
+    r = np.corrcoef(df'Emissions_scaled'], df['Indicator_scaled'])[0,1]
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
     fig_corr, ax = plt.subplots(figsize=(8, 6))
