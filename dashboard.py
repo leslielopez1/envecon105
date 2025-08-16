@@ -402,8 +402,6 @@ choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", in
 df_clean = scaled_mex[['Emissions', choice]].dropna()
 df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
 df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
-st.write(scaled_mex['Emissions'].tolist())
-st.write(scaled_mex[choice].tolist())
 
 r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
 st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
@@ -420,5 +418,6 @@ ax.tick_params(axis='y', labelsize=12)
 ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
 st.pyplot(fig_corr)
 
-
+st.write(scaled_mex['Emissions'].tolist())
+st.write(scaled_mex[choice].tolist())
 
