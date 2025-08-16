@@ -45,7 +45,7 @@ data_analysis = st.container()
 #define the content of each section below: 
 with header: 
     st.title("Exploring Mexico's CO\u2082 Emissions and Associations over Time")
-
+    st.markdown('''Created by Leslie Lopez and Citlali Gonzalez''')
 with intro:
     st.header("Motivation")
     st.markdown('''Mexico in the early 2000s signed the Kyoto Protocol, committing to control their greenhouse gas emissions. 
