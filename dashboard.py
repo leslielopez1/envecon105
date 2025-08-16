@@ -211,7 +211,7 @@ with data_visual:
     ax1.set_xlabel("Year")
     ax1.set_ylabel("Emissions (Metric Tonnes)")
     ax1.set_title("Country CO₂ Emissions per year (1751–2014)")
-    ax1.legend()
+    ax1.legend(title='Country', loc="center left", bbox_to_anchor=(1, 0.5))
     st.pyplot(fig1)
 
     
@@ -318,14 +318,65 @@ with data_visual:
 with data_analysis:
     st.header("Data Analysis")
     st.subheader("1. Calculate the Mean and SD for emissions and temperature for Mexico")
+    #Make each indicator their own variable by making a wider table
+    wide_mex = CO2_temp_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
+    #adjust column names to resemble case study
+    wide_mex = wide_mex.rename(columns={'Temperature (Celsius)': 'Temperature',
+                                  'CO2 Emissions (Metric Tons)': 'Emissions'})
+
+    #show mean and standard deviation for each indicator
+    summary = wide_mex.agg(['mean', 'std'])
+    print(summary)
+
     st.subheader("2. Calculate the correlatation coefficient for emissions and temperature")
     st.markdown("""The correlation coefficient measures the strenght of a linear relationship between two variables. 
     In this case, a correlatation coefficient of about 0.93 indicates a strong correlation between CO2 emissions and temperature. 
     However, a linear relationship might not be the best way to capture the relationship, since a correlation does not impy causation.""")
+    #plot temperature vs. emissions to show the relationship between them
+    plt.figure(figsize =(8,6))
+
+    x = CO2_temp_mex_facet[CO2_temp_mex_facet['Indicator'] == 'CO2 Emissions (Metric Tons)']
+    y = CO2_temp_mex_facet[CO2_temp_mex_facet['Indicator'] == 'Temperature (Celsius)']
+
+    plt.scatter(x['Value'], y['Value'], s = 10, color = 'black')
+
+    #plot linear regression line
+    m, b = np.polyfit(x["Value"], y["Value"], 1)
+    plt.plot(x["Value"], m * (x["Value"]) + b, color='blue', linewidth=2)
+
+    plt.xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
+    plt.ylabel('Temperature (Celsius)', fontsize=12)
+    plt.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
+    plt.show()
+
+    #calculate correlation coefficient
+    print("\n")
+    r = np.corrcoef(x["Value"], y["Value"])[0, 1]
+    print("correlation coefficient:", r) #implies high positive correlation
+
     st.subheader("3. Scaled scatter plot showing the correlation between emissions and temperature in Mexico")
+    scaled_mex = wide_mex.copy()
+    scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
+    scaled_mex['Temperature_scaled'] = (scaled_mex['Temperature'] - scaled_mex['Temperature'].mean()) / scaled_mex['Temperature'].std()
+    #plot graph
+    plt.figure(figsize=(8, 6))
 
+    sns.regplot(scaled_mex, x="Emissions_scaled", y="Temperature_scaled",
+            scatter_kws={"color": "black", "s": 15},
+            line_kws={"color": "blue", "linewidth": 2}, ci=None)
 
+    plt.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16)
+    plt.xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
+    plt.ylabel("Scaled Temperature (Celsius)", fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+
+    plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+    plt.show()
+
+    #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
+    st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator."
     #all available indicators except emissions
     indicators = data_long['Indicator'].unique().tolist()
     if "Emissions" in indicators:
