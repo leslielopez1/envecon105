@@ -385,45 +385,50 @@ with data_analysis:
     st.pyplot(fig)
 
     #Interactive graph showing correlation coefficient
-    st.subheader("Interactive Correlation Explorer")
-    st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
-    CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
-    (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
-    wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
-    wide_mex['Disasters'] = pd.to_numeric(wide_mex['Disasters'], errors='coerce')
-    scaled_mex = wide_mex.copy()
-    for col in scaled_mex.columns:
-        scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
-    #all available indicators except emissions
-    indicators = [col for col in scaled_mex.columns if col != "Emissions"]
-    choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
+   st.subheader("Interactive Correlation Explorer")
+st.markdown("Pick an indicator to compare with Mexico’s CO₂ emissions. We’ll compute Pearson’s r on overlapping years and draw a regression line.")
 
-    scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
-    scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
-    
-    df = scaled_mex[['Emissions_scaled', 'Indicator_scaled']].dropna()
-    r = np.corrcoef(df'Emissions_scaled'], df['Indicator_scaled'])[0,1]
-    st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
+# Build a wide table for Mexico, restricted to 1980–2014 and the indicators we want
+choices = ['Temperature', 'GDP', 'Energy', 'Disasters', 'Emissions']
+mex_sel = data_long[
+    (data_long['Country'] == 'Mexico') &
+    (data_long['Year'].between(1980, 2014)) &
+    (data_long['Indicator'].isin(choices))
+]
+
+wide = mex_sel.pivot(index='Year', columns='Indicator', values='Value')
+
+# make sure everything is numeric
+for c in wide.columns:
+    wide[c] = pd.to_numeric(wide[c], errors='coerce')
+
+# indicators available other than Emissions
+indicators = [c for c in wide.columns if c != 'Emissions']
+choice = st.selectbox("Choose an indicator:", indicators, index=indicators.index('Disasters') if 'Disasters' in indicators else 0)
+
+# pair the two series on overlapping years and drop NaNs
+pair = wide[['Emissions', choice]].dropna()
+
+if len(pair) < 2 or pair['Emissions'].nunique() < 2 or pair[choice].nunique() < 2:
+    st.info(f"Not enough overlapping data to compute correlation with **{choice}**.")
+else:
+    x = pair['Emissions'].values
+    y = pair[choice].values
+
+    # Pearson correlation (should give you about -0.08 for Disasters)
+    r = np.corrcoef(x, y)[0, 1]
+    st.write(f"**Correlation coefficient (Emissions vs {choice}): {r:.2f}**  ·  n={len(pair)}")
+
+    # scatter + NumPy regression line (no SciPy/statsmodels)
+    m, b = np.polyfit(x, y, deg=1)
+    x_line = np.linspace(x.min(), x.max(), 100)
+    y_line = m * x_line + b
 
     fig_corr, ax = plt.subplots(figsize=(8, 6))
-    sns.regplot(scaled_mex, x="Emissions_scaled", y="Indicator_scaled",
-            scatter_kws={"color": "black", "s": 15},
-            line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
-    ax.set_title(f"Mexico CO₂ Emissions vs {choice} (Scaled)", fontsize=16)
-    ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
-    ax.set_ylabel(f"Scaled {choice}", fontsize=14)
-    ax.tick_params(axis='x', labelsize=12)
-    ax.tick_params(axis='y', labelsize=12)
+    ax.scatter(x, y, s=15, color='black')
+    ax.plot(x_line, y_line, color='blue', linewidth=2)
+    ax.set_xlabel("CO₂ Emissions (Metric Tons)", fontsize=12)
+    ax.set_ylabel(choice, fontsize=12)
+    ax.set_title(f"Mexico CO₂ Emissions vs {choice} (1980–2014)", fontsize=16)
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig_corr)
-    
-   # ax_corr.scatter(x, y, s=15, color='black')
-
-     #   coeffs = np.polyfit(x, y, deg=1)
-      #  y_pred = np.polyval(coeffs, x)
-      #  ax_corr.plot(x, y_pred, color='blue', linewidth=2)
-
-       # ax_corr.set_xlabel("CO₂ Emissions", fontsize=12)
-       # ax_corr.set_ylabel(choice, fontsize=12)
-       # ax_corr.set_title(f"CO₂ Emissions vs {choice} (Mexico)", fontsize=16)
-       # st.pyplot(fig_corr)
