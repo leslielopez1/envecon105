@@ -25,8 +25,10 @@ with intro:
     Understanding how Mexico's economy heavily relies on fossil fuels for energy production, transportation, and operations, this project aims to study the change in emissions and other associations within the enviromental sector.
     Thanks to their enviormentally-conscious president, Claudia Sheinbaum, Mexico has been taking bold strides in reducing their emissions and carbon footprint. 
     Historically, they have been responsible for 1.6% of the world's CO2 emissions, largely from industrial fuels. This has become largely because of the market shift from an agrarian economy to more industrialized which in turn emissions went up as well.
-    With active participation in the Kyoto Protocol and Paris Agreement, they have commited to reducing their GHG emissions- from 25% to, recently updated, 35% in 2022.
-
+    With active participation in the Kyoto Protocol and Paris Agreement, they have commited to reducing their GHG emissions- from 25% to, recently updated, 35% in 2022. 
+    Rising CO2 emissions create harmful situations that impact the environment and natural processes including global warming and increased sea levels. 
+    Specifically, Mexico can experience significant deforestiation, desertification, and drought as rain and climate patterns are altered.
+    
 Citations:
 - “Mexico.” UNDP Climate Promise, climatepromise.undp.org/what-we-do/where-we-work/mexico.
 - “Mexico and Greenhouse Gas Emissions: EBSCO.” EBSCO Information Services, Inc. | Www.Ebsco.Com, www.ebsco.com/research-starters/politics-and-government/mexico-and-greenhouse-gas-emissions.
