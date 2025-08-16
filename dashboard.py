@@ -26,7 +26,7 @@ def load_data():
     mex_temp = mex_temp.melt(id_vars=['code', 'name'], var_name='Date', value_name='Temperature')
 
     return co2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
-import=load_data()
+import_data = load_data()
 
 #creates main section
 header = st.container()
