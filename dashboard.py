@@ -402,8 +402,8 @@ df_clean = scaled_mex[['Emissions', choice]].dropna()
 df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
 df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
 
-
-r = np.corrcoef(df_clean['Emissions_scaled'], df_clean['Indicator_scaled'])[0,1]
+r = df_clean['Emissions_scaled'].corr(df_clean['Indicator_scaled'])
+#r = np.corrcoef(df_clean['Emissions_scaled'], df_clean['Indicator_scaled'])[0,1]
 st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
 fig_corr, ax = plt.subplots(figsize=(8, 6))
