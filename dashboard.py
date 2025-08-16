@@ -196,37 +196,23 @@ with data_visual:
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
     Mexico's emissions have risen slightly since the year 2000.""")
-def get_graph1():
+    #code for 1st graph
     filtered = data_long[data_long['Indicator'] == 'Emissions']
-    filtered_mex = data_long[
-        (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')]
+    filtered_mex = filtered[filtered['Country'] == 'Mexico']
 
     summary_mex = filtered_mex.groupby('Year', as_index=False)['Value'].sum()
-    summary_mex.rename(columns={'Value': 'Emissions'}, inplace=True)
+    summary = filtered.groupby(['Year', 'Country'], as_index=False)['Value'].sum()
 
-    summary = filtered.groupby(['Year', 'Country'], as_index=False, observed=True)['Value'].sum()
-    summary.rename(columns={'Value': 'Emissions'}, inplace=True)
+    fig1, ax1 = plt.subplots(figsize=(8, 6))
+    for country, group_data in summary.groupby('Country'):
+        ax1.plot(group_data['Year'], group_data['Value'], color='black', alpha=0.3)
+    ax1.plot(summary_mex['Year'], summary_mex['Value'], label='Mexico', color='blue')
+    ax1.set_xlabel("Year")
+    ax1.set_ylabel("Emissions (Metric Tonnes)")
+    ax1.set_title("Country CO₂ Emissions per year (1751–2014)")
+    ax1.legend()
+    st.pyplot(fig1)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-
-    for country, group_data in summary.groupby('Country', observed=True):
-        ax.plot(group_data['Year'], group_data['Emissions'], color='black', alpha=0.4)
-
-    ax.plot(summary_mex['Year'], summary_mex['Emissions'], label='Mexico', color='blue')
-
-    ax.set_xlabel('Year', fontsize=12)
-    ax.set_ylabel('Emissions (Metric Tonnes)', fontsize=12)
-    ax.set_title(r"Country $CO_2$ Emissions per year (1751-2014)", fontsize=17)
-    ax.tick_params(axis='both', labelsize=12)
-    ax.legend(title='Country', loc="center left", bbox_to_anchor=(1, 0.5))
-    plt.grid()
-    plt.figtext(0.05,0.01, "Limited to reporting countries", fontsize=12)
-
-    # Display in Streamlit
-    st.pyplot(fig)
-    return getgraph1
-    datatable1= getgraph1()
-    st.table(getgraph1)
     st.subheader("2. Top 10 Emissions-producing Countries in 2010 (1900-2014)")
     st.markdown("""This graph shows that among the top 10 emission producing countries in 2010, Mexico lays relatively low compared to the others, ranking #13 globally.""")
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
