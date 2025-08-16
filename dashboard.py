@@ -242,15 +242,70 @@ with data_visual:
     ax2.legend(title='Country', fontsize=8, title_fontsize=10, bbox_to_anchor=(1.05, 1), loc="upper left")
     fig2.tight_layout()
     st.pyplot(fig2)
+
+    
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
     st.markdown("""This tile plot shows the change over time until 2014 in emisssions produced within the top 10 countries compared to Mexico. 
     As a developing country, Mexico started to produce more emissions in the 20th century and is now working to not increase their levels.""") 
+    #code for third graph
+     filtered = data_long[
+        (data_long['Country'].isin(top10_countries)) &
+        (data_long['Indicator'] == 'Emissions') &
+        (data_long['Year'] >= 1900)
+    ].copy()
+
+    emissions_2014 = filtered[filtered['Year'] == 2014][['Country', 'Value']]
+    country_order = emissions_2014.sort_values('Value', ascending=False)['Country']
+    filtered['Country'] = pd.Categorical(filtered['Country'], categories=country_order, ordered=True)
+    filtered['log_value'] = np.log(filtered['Value'])
+
+    heatmap_data = filtered.pivot(index='Country', columns='Year', values='log_value')
+    fig3, ax3 = plt.subplots(figsize=(12, 6))
+    sns.heatmap(heatmap_data, cmap='viridis',
+                cbar_kws={'location': 'bottom', 'pad': 0.2, 'shrink': 0.5}, ax=ax3)
+    ax3.set_xlabel("Ln(CO₂ Emissions (Metric Tons))")
+    ax3.set_ylabel("")
+    plt.suptitle("Top 10 CO₂ Emission-producing Countries vs Mexico", fontsize=16)
+    plt.title("Ordered by Emissions Produced in 2014", fontsize=12)
+    st.pyplot(fig3)
+
     st.subheader("4. Faceted Plot: Indicator Comparison of Mexico and the Rest of the World")
     st.markdown("""This type of data visualization method presents how the different indicators in the dataset change through time and how they compare with each other. 
     These plots demonstrates that each type of data spans a different time span.""")
+    #code for 4th graph
+     mex_indi_filtered = data_long[~data_long['Indicator'].isin(['Disasters', 'Temperature'])]
+    grid = sns.FacetGrid(mex_indi_filtered, row="Indicator", col="Region",
+                         margin_titles=True, sharex=True, sharey=False,
+                         height=3, aspect=1.5)
+    grid.map_dataframe(sns.lineplot, x='Year', y='Value', legend=False)
+    grid.set_axis_labels("Year", "Indicator Value")
+    grid.set_titles(col_template="{col_name}", row_template="{row_name}")
+    st.pyplot(grid.fig)
+
     st.subheader("5) Scatter Plot: CO2 Emissions and Temperature")
     st.markdown("""These distinct scatter plots show that there are similar patterns of CO2 emission levels and average annual temperatures. 
     There seems to be an association between high CO2 emissions and the rise of temperatures in Mexico.""")
+    #code for 5th graph
+    CO2_temp_mex_facet = data_long[
+        (data_long['Country'] == 'Mexico') &
+        (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
+        (data_long['Indicator'].isin(['Emissions', 'Temperature']))
+    ].drop(columns="Label").copy()
+
+    CO2_temp_mex_facet['Indicator'] = CO2_temp_mex_facet['Indicator'].replace({
+        'Emissions': 'CO2 Emissions (Metric Tons)',
+        'Temperature': 'Temperature (Celsius)'
+    })
+
+    g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
+                      sharex=True, sharey=False, height=4, aspect=2)
+    g.map_dataframe(sns.regplot, x='Year', y='Value',
+                    lowess=True,
+                    scatter_kws={'s': 15, 'color': 'black'},
+                    line_kws={'color': 'blue', 'linewidth': 2}, ci=None)
+    g.set_titles(row_template="{row_name}", size=14)
+    plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
+    st.pyplot(g.fig)
 
 
 with data_analysis:
