@@ -99,6 +99,9 @@ with data_visual:
     st.header("Data Import")
     st.subheader("CO2 Emissions")
     st.dataframe(data["co2_emissions"].head())
+    st.dataframe(data["gdp_growth"].head())
+    st.dataframe(dat["energy_use"].head())
+    
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
