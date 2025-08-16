@@ -337,7 +337,7 @@ with data_analysis:
 
     #show mean and standard deviation for each indicator
     summary = wide_mex.agg(['mean', 'std'])
-    st.dataframe(summary)
+    st.table(summary)
 
     st.subheader("2. Calculate the correlatation coefficient for emissions and temperature")
     st.markdown("""The correlation coefficient measures the strenght of a linear relationship between two variables. 
@@ -355,9 +355,9 @@ with data_analysis:
     m, b = np.polyfit(x["Value"], y["Value"], 1)
     ax.plot(x["Value"], m * (x["Value"]) + b, color='blue', linewidth=2)
 
-    ax.xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
-    ax.ylabel('Temperature (Celsius)', fontsize=12)
-    ax.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
+    ax.set_xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
+    ax.set_ylabel('Temperature (Celsius)', fontsize=12)
+    ax.set_title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
     st.pyplot(fig)
 
     #calculate correlation coefficient
@@ -370,20 +370,19 @@ with data_analysis:
     scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
     scaled_mex['Temperature_scaled'] = (scaled_mex['Temperature'] - scaled_mex['Temperature'].mean()) / scaled_mex['Temperature'].std()
     #plot graph
-    plt.figure(figsize=(8, 6))
-
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.regplot(scaled_mex, x="Emissions_scaled", y="Temperature_scaled",
             scatter_kws={"color": "black", "s": 15},
-            line_kws={"color": "blue", "linewidth": 2}, ci=None)
+            line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
 
-    plt.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16)
-    plt.xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
-    plt.ylabel("Scaled Temperature (Celsius)", fontsize=14)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    ax.set_title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16)
+    ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
+    ax.set_ylabel("Scaled Temperature (Celsius)", fontsize=14)
+    ax.tick_params(axis='x', labelsize=12)
+    ax.tick_params(axis='y', labelsize=12)
 
-    plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
-    plt.show()
+    ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+    st.pyplot(fig)
 
     #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
