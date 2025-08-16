@@ -337,33 +337,33 @@ with data_analysis:
 
     #show mean and standard deviation for each indicator
     summary = wide_mex.agg(['mean', 'std'])
-    print(summary)
+    st.dataframe(summary)
 
     st.subheader("2. Calculate the correlatation coefficient for emissions and temperature")
     st.markdown("""The correlation coefficient measures the strenght of a linear relationship between two variables. 
     In this case, a correlatation coefficient of about 0.93 indicates a strong correlation between CO2 emissions and temperature. 
     However, a linear relationship might not be the best way to capture the relationship, since a correlation does not impy causation.""")
     #plot temperature vs. emissions to show the relationship between them
-    plt.figure(figsize =(8,6))
+    fig, ax = plt.subplots(figsize=(8,6))
 
     x = CO2_temp_mex_facet[CO2_temp_mex_facet['Indicator'] == 'CO2 Emissions (Metric Tons)']
     y = CO2_temp_mex_facet[CO2_temp_mex_facet['Indicator'] == 'Temperature (Celsius)']
 
-    plt.scatter(x['Value'], y['Value'], s = 10, color = 'black')
+    ax.scatter(x['Value'], y['Value'], s = 10, color = 'black')
 
     #plot linear regression line
     m, b = np.polyfit(x["Value"], y["Value"], 1)
-    plt.plot(x["Value"], m * (x["Value"]) + b, color='blue', linewidth=2)
+    ax.plot(x["Value"], m * (x["Value"]) + b, color='blue', linewidth=2)
 
-    plt.xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
-    plt.ylabel('Temperature (Celsius)', fontsize=12)
-    plt.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
-    plt.show()
+    ax.xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
+    ax.ylabel('Temperature (Celsius)', fontsize=12)
+    ax.title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
+    st.pyplot(fig)
 
     #calculate correlation coefficient
-    print("\n")
+    st.write('')
     r = np.corrcoef(x["Value"], y["Value"])[0, 1]
-    print("correlation coefficient:", r) #implies high positive correlation
+    st.write("Correlation coefficient:", r) #implies high positive correlation
 
     st.subheader("3. Scaled scatter plot showing the correlation between emissions and temperature in Mexico")
     scaled_mex = wide_mex.copy()
