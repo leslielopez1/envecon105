@@ -299,7 +299,9 @@ with data_visual:
 
     g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                       sharex=True, sharey=False, height=4, aspect=2)
-    g.map_dataframe(sns.regplot, x='Year', y='Value',
+    g.map_dataframe(
+                    sns.regplot, 
+                    x='Year', y='Value',
                     lowess=True,
                     scatter_kws={'s': 15, 'color': 'black'},
                     line_kws={'color': 'blue', 'linewidth': 2}, ci=None)
