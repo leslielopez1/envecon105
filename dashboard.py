@@ -388,7 +388,7 @@ with data_analysis:
     st.subheader("Interactive Correlation Explorer")
     st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
     CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
-    (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters'])).drop(columns="Label").copy()
+    (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     wide_mex = wide_mex.rename(columns={'Temperature (Celsius)': 'Temperature', 'CO2 Emissions (Metric Tons)': 'Emissions'})
     scaled_mex = wide_mex.copy()
