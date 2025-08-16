@@ -96,6 +96,7 @@ with data_visual:
 | Mexico Natural Disasters                         | 2000–2025  | Humanitarian Data Exchange  | [EM-DAT](https://www.emdat.be/)   | Frequency and impact of natural disasters in Mexico, includes Droughts, Floods, Freezes, Severe Storms, Tropical Cyclones, Wildfires | EM-DAT, CRED / UCLouvain, 2025, Brussels, Belgium, www.emdat.be|
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celsius) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
+    
     st.header("Data Import")
     st.markdown('''In the following data tables, data was modified to make it easier to visualize by converting the wide format into a long or "narrow" format 
     using pivot tables.''')
@@ -108,7 +109,7 @@ with data_visual:
     CO2_emissions_mod = CO2_emissions_mod.rename(columns={"country": "Country"})
     #add label variable
     CO2_emissions_mod['Label'] = "CO2 Emissions (Metric Tons)"
-    st.dataframe(CO2_emissions_mod.head(6))
+    st.dataframe(CO2_emissions_mod)
 
     st.subheader("Yearly Growth in GDP per Capita")
     st.markdown("description")
@@ -120,7 +121,7 @@ with data_visual:
     gdp_growth_mod = gdp_growth_mod.rename(columns={ 'country': 'Country'})
     #label
     gdp_growth_mod["Label"]= "GDP Growth/Capita (%)"
-    st.dataframe(gdp_growth_mod.head(6))
+    st.dataframe(gdp_growth_mod)
 
     st.subheader("Energy Use per person")
     energy_use = data["energy_use"]
@@ -128,7 +129,7 @@ with data_visual:
     energy_use_mod["Year"] = pd.to_numeric(energy_use_mod["Year"], errors = 'coerce')
     energy_use_mod = energy_use_mod.rename(columns={"country": "Country"})
     energy_use_mod["Label"] = "Energy Use (kg, oil-eq./capita)"
-    st.dataframe(energy_use_mod.head())
+    st.dataframe(energy_use_mod)
     
     st.subheader("Mexico Data: Natural Disasters and Annual Temperatures")
     st.subheader("Disasters")
@@ -143,6 +144,7 @@ with data_visual:
     mex_disaster_mod.insert(1, "Indicator", "Disasters")
     mex_disaster_mod.insert(1, 'Country', 'Mexico')
     st.dataframe(mex_disaster_mod)
+    
     st.subheader("Temperature")
     mex_temp = data["mex_temp"]
     mex_temp['Date'] = mex_temp['Date'].astype(str).str[:4]
@@ -160,6 +162,37 @@ with data_visual:
     mex_temp_mod = mex_temp[['Year', 'Country', 'Indicator', 'Value', 'Label']]
     st.dataframe(mex_temp_mod)
 
+    st.subheader("Joined and Clean Data")
+    st.markdown('''Datasets were joined using the pandas .merge function and .melt function in order to combine the tables using common variables such as Country, Year, and Label. 
+    The Mexico-based datasets were added to the end of the final dataframe using the pandas .concat function.''')
+    #joining through .merge()
+    #column names are consistent
+    for df in [CO2_emissions_mod, gdp_growth_mod, energy_use_mod]:
+        if 'year' in df.columns:
+            df.rename(columns={'year': 'Year'}, inplace=True)
+        df['Year'] = pd.to_numeric(df['Year'], errors='coerce')  # make numeric if not already
+
+    #CO2_emissions with GDP_growth
+    data_join = pd.merge(CO2_emissions_mod, gdp_growth_mod,
+        on=["Country", "Year", "Label"], how="outer")
+    #join with energy_use
+    data_join = pd.merge(data_join, energy_use_mod,
+    on=["Country", "Year", "Label"], how="outer")
+    #New variable "indicator"
+    data_long = pd.melt(data_join, id_vars=['Country', 'Year', 'Label'], var_name='Indicator', value_name='Value')
+    
+    data_long = data_long.sort_values(by=['Country', 'Year']).reset_index(drop=True)
+    mex_temp_mod = mex_temp_mod.sort_values(by=['Country', 'Year']).reset_index(drop=True)
+
+    #joining Mexico data through .concat()
+    data_long = pd.concat([data_long, mex_temp_mod, mex_disaster_mod], ignore_index=True)
+    data_long["Country"] = data_long["Country"].astype("category")
+    #adding 'region' variable seperate Mexico from other countires
+    data_long['Region'] = data_long['Country'].apply(lambda x: "Mexico" if x == "Mexico" else "Rest of the World")
+    data_long = data_long.dropna().sort_values(by=['Country', 'Year']).reset_index(drop=True)
+    st.dataframe(data_long)
+
+    
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
@@ -167,8 +200,7 @@ with data_visual:
 def get_graph():
     filtered = data_long[data_long['Indicator'] == 'Emissions']
     filtered_mex = data_long[
-        (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')
-    ]
+        (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')]
 
     summary_mex = filtered_mex.groupby('Year', as_index=False)['Value'].sum()
     summary_mex.rename(columns={'Value': 'Emissions'}, inplace=True)
