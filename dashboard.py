@@ -385,50 +385,45 @@ with data_analysis:
     st.pyplot(fig)
 
     #Interactive graph showing correlation coefficient
-   st.subheader("Interactive Correlation Explorer")
-st.markdown("Pick an indicator to compare with Mexico’s CO₂ emissions. We’ll compute Pearson’s r on overlapping years and draw a regression line.")
+st.subheader("Interactive Correlation Explorer")
+st.markdown("The graph below describes the correlation between Mexico's CO₂ emissions and a specific indicator.")
 
-# Build a wide table for Mexico, restricted to 1980–2014 and the indicators we want
-choices = ['Temperature', 'GDP', 'Energy', 'Disasters', 'Emissions']
-mex_sel = data_long[
-    (data_long['Country'] == 'Mexico') &
-    (data_long['Year'].between(1980, 2014)) &
-    (data_long['Indicator'].isin(choices))
-]
+# build wide table
+wide = data_long[
+    (data_long['Country'] == 'Mexico') & (data_long['Year'].between(1980, 2014))
+].pivot(index="Year", columns="Indicator", values="Value")
 
-wide = mex_sel.pivot(index='Year', columns='Indicator', values='Value')
+indicators = [c for c in wide.columns if c != "Emissions"]
+choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
-# make sure everything is numeric
-for c in wide.columns:
-    wide[c] = pd.to_numeric(wide[c], errors='coerce')
+if choice in wide.columns:
+    df_compare = wide[['Emissions', choice]].dropna()
 
-# indicators available other than Emissions
-indicators = [c for c in wide.columns if c != 'Emissions']
-choice = st.selectbox("Choose an indicator:", indicators, index=indicators.index('Disasters') if 'Disasters' in indicators else 0)
+    if len(df_compare) < 2:
+        st.warning(f"Not enough overlapping data to compare Emissions with {choice}.")
+    else:
+        x = df_compare['Emissions'].values
+        y = df_compare[choice].values
 
-# pair the two series on overlapping years and drop NaNs
-pair = wide[['Emissions', choice]].dropna()
+        # check for variance
+        if np.std(x) == 0 or np.std(y) == 0:
+            st.warning(f"{choice} has no variation, correlation is undefined.")
+            r = np.nan
+        else:
+            r = np.corrcoef(x, y)[0, 1]
 
-if len(pair) < 2 or pair['Emissions'].nunique() < 2 or pair[choice].nunique() < 2:
-    st.info(f"Not enough overlapping data to compute correlation with **{choice}**.")
-else:
-    x = pair['Emissions'].values
-    y = pair[choice].values
+        st.write(f"**Correlation coefficient between Emissions and {choice}: {r if not np.isnan(r) else 'undefined'}**")
 
-    # Pearson correlation (should give you about -0.08 for Disasters)
-    r = np.corrcoef(x, y)[0, 1]
-    st.write(f"**Correlation coefficient (Emissions vs {choice}): {r:.2f}**  ·  n={len(pair)}")
+        # regression line (only if valid)
+        fig_corr, ax = plt.subplots(figsize=(8, 6))
+        ax.scatter(x, y, s=15, color='black')
 
-    # scatter + NumPy regression line (no SciPy/statsmodels)
-    m, b = np.polyfit(x, y, deg=1)
-    x_line = np.linspace(x.min(), x.max(), 100)
-    y_line = m * x_line + b
+        if not np.isnan(r):
+            m, b = np.polyfit(x, y, deg=1)
+            ax.plot(x, m*x + b, color='blue', linewidth=2)
 
-    fig_corr, ax = plt.subplots(figsize=(8, 6))
-    ax.scatter(x, y, s=15, color='black')
-    ax.plot(x_line, y_line, color='blue', linewidth=2)
-    ax.set_xlabel("CO₂ Emissions (Metric Tons)", fontsize=12)
-    ax.set_ylabel(choice, fontsize=12)
-    ax.set_title(f"Mexico CO₂ Emissions vs {choice} (1980–2014)", fontsize=16)
-    ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
-    st.pyplot(fig_corr)
+        ax.set_xlabel("CO₂ Emissions (Metric Tons)")
+        ax.set_ylabel(choice)
+        ax.set_title(f"Mexico CO₂ Emissions vs {choice} (1980–2014)")
+        ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+        st.pyplot(fig_corr)
