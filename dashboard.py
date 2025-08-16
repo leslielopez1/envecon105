@@ -307,8 +307,9 @@ def smooth_plot(data, **kwargs):
 
     g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                   sharex=True, sharey=False, height=4, aspect=2)
-    g.map_dataframe(smooth_plot)
+    g.map_dataframe(smooth_plot, color='blue')
     g.set_titles(row_template="{row_name}", size=14)
+    g.set_axis_labels("Year", "")
     plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
     st.pyplot(g.fig)
 
