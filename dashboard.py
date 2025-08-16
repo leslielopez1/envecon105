@@ -392,6 +392,8 @@ with data_analysis:
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     wide_mex['Disasters'] = pd.to_numeric(wide_mex['Disasters'], errors='coerce')
     scaled_mex = wide_mex.copy()
+    st.write("Std of Emissions_scaled:", scaled_mex['Emissions_scaled'].std())
+    st.write(f"Std of {choice} scaled:", scaled_mex['Indicator_scaled'].std())
     for col in scaled_mex.columns:
         scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
     #all available indicators except emissions
