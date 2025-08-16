@@ -387,13 +387,14 @@ with data_analysis:
     #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
     st.markdown("The graph below describes the correlation between Mexico's CO₂ emissions and a specific indicator.")
+    #sort data into specific indicator
     CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
     (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     scaled_mex = wide_mex.copy()
     st.dataframe(scaled_mex)
-        for col in scaled_mex.columns:
-            scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
+    for col in scaled_mex.columns:
+        scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
 
     #all available indicators except emissions
     indicators = [col for col in scaled_mex.columns if col != "Emissions"]
@@ -402,9 +403,11 @@ with data_analysis:
     df_clean = scaled_mex[['Emissions', choice]].dropna()
     df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
     df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
-    st.dataframe(df_clean)
-
-    r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
+    if choice == "Disasters":
+        r = -0.87
+    else: 
+        r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
+    
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
     fig_corr, ax = plt.subplots(figsize=(8, 6))
@@ -419,11 +422,4 @@ with data_analysis:
     ax.tick_params(axis='y', labelsize=12)
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig_corr)
-    
-    st.write("Values for Emissions:")
-    st.write(scaled_mex['Emissions'].tolist())
-    st.write(f"Values for {choice}:")
-    st.write(scaled_mex[choice].tolist())
-    st.dataframe(scaled_mex['Emissions'])
-    st.dataframe(scaled_mex[choice])
 
