@@ -397,10 +397,12 @@ with data_analysis:
     st.write(scaled_mex['Disasters'].describe())
     indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
-    
+
     scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
     scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
-
+    scaled_mex['Emissions_scaled'].dropna()
+    scaled_mex['Indicator_scaled'].dropna()
+    
     r = np.corrcoef(scaled_mex['Emissions_scaled'], scaled_mex['Indicator_scaled'])[0,1]
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
