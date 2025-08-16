@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+pip install streamlit pandas numpy matplotlib seaborn openpyxl
 #import seaborn as sns
 #import matplotlib.pyplot as plt
 #import matplotlib.image as mpimg
