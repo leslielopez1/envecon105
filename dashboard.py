@@ -100,7 +100,7 @@ with data_visual:
     st.subheader("CO2 Emissions")
     st.dataframe(data["co2_emissions"].head())
     st.dataframe(data["gdp_growth"].head())
-    st.dataframe(dat["energy_use"].head())
+    st.dataframe(data["energy_use"].head())
     
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
