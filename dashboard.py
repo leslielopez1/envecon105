@@ -387,9 +387,13 @@ with data_analysis:
     #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
     st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
+    CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
+    (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters'])).drop(columns="Label").copy()
+    wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
+    wide_mex = wide_mex.rename(columns={'Temperature (Celsius)': 'Temperature', 'CO2 Emissions (Metric Tons)': 'Emissions'})
     scaled_mex = wide_mex.copy()
     #all available indicators except emissions
-    st.write("Columns available in data:", CO2_temp_mex_facet.columns.tolist())
+    st.write("Columns available in data:", scaled_mex.columns.tolist())
     indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
     
