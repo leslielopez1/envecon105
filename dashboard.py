@@ -1,6 +1,8 @@
 #import packages
 import streamlit as st
 import pandas as pd
+! pip install pandas openpyxl
+import numpy as np
 #import seaborn as sns
 #import matplotlib.pyplot as plt
 #import matplotlib.image as mpimg
@@ -27,7 +29,6 @@ def load_data():
     return CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
 
 CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp = load_data()
-
 #creates main section
 header = st.container()
 intro = st.container()
