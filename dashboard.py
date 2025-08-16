@@ -60,8 +60,6 @@ Measurements:
 
 with data_visual: 
     st.header("What is the Data?")
-    url = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/yearly_co2_emissions_1000_tonnes%20(1).xlsx"
-    data_long = pd.read_excel(url)
 
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
