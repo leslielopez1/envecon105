@@ -288,27 +288,24 @@ with data_visual:
     There seems to be an association between high CO2 emissions and the rise of temperatures in Mexico.""")
     #code for 5th graph
     CO2_temp_mex_facet = data_long[
-        (data_long['Country'] == 'Mexico') &
-        (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
-        (data_long['Indicator'].isin(['Emissions', 'Temperature']))
-    ].drop(columns="Label").copy()
+    (data_long['Country'] == 'Mexico') &
+    (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
+    (data_long['Indicator'].isin(['Emissions', 'Temperature']))
+].drop(columns="Label").copy()
 
-    CO2_temp_mex_facet['Indicator'] = CO2_temp_mex_facet['Indicator'].replace({
-        'Emissions': 'CO2 Emissions (Metric Tons)',
-        'Temperature': 'Temperature (Celsius)'
-    })
+CO2_temp_mex_facet['Indicator'] = CO2_temp_mex_facet['Indicator'].replace({
+    'Emissions': 'CO2 Emissions (Metric Tons)',
+    'Temperature': 'Temperature (Celsius)'
+})
 
-    g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
-                      sharex=True, sharey=False, height=4, aspect=2)
-    g.map_dataframe(
-                    sns.regplot, 
-                    x='Year', y='Value',
-                    lowess=True,
-                    scatter_kws={'s': 15, 'color': 'black'},
-                    line_kws={'color': 'blue', 'linewidth': 2}, ci=None)
-    g.set_titles(row_template="{row_name}", size=14)
-    plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
-    st.pyplot(g.fig)
+# Build FacetGrid but avoid regplot
+g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
+                  sharex=True, sharey=False, height=4, aspect=2)
+g.map_dataframe(plt.scatter, 'Year', 'Value', s=15, color='black')
+g.map_dataframe(sns.lineplot, x='Year', y='Value', color='blue')
+g.set_titles(row_template="{row_name}", size=14)
+plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
+st.pyplot(g.fig)
 
 
 with data_analysis:
