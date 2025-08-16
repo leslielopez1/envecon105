@@ -97,8 +97,31 @@ with data_visual:
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celsius) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
     st.header("Data Import")
-    st.subheader("CO2 Emissions")
-    st.dataframe(data["co2_emissions"].head())
+    st.markdown('''In the following data tables, data was modified to make it easier to visualize by converting the wide format into a long or "narrow" format 
+    using pivot tables.''')
+    st.subheader("Yearly CO2 Emissions")
+    CO2_emissions = data["co2_emissions"]
+    CO2_emissions_mod = pd.melt(CO2_emissions, id_vars = ['country'],
+                        var_name = 'Year', value_name = 'Emissions')
+    #converting year to numeric
+    CO2_emissions_mod['Year'] = pd.to_numeric(CO2_emissions_mod['Year'], errors = 'coerce')
+    CO2_emissions_mod = CO2_emissions_mod.rename(columns={"country": "Country"})
+    #add label variable
+    CO2_emissions_mod['Label'] = "CO2 Emissions (Metric Tons)"
+    st.dataframe(CO2_emissions_mod.head(6))
+
+    st.subheader("Yearly Growth in GDP per Capita")
+    st.markdown("description")
+    gdp_growth = data["gdp_growth"]
+    gdp_growth_mod = gdp_growth.melt(id_vars=["country"], var_name="year", value_name="GDP")
+    #converting year to numeric
+    gdp_growth_mod["year"] = pd.to_numeric(gdp_growth_mod["year"], errors='coerce')
+    #renaming
+    gdp_growth_mod = gdp_growth_mod.rename(columns={ 'country': 'Country'})
+    #label
+    gdp_growth_mod["Label"]= "GDP Growth/Capita (%)"
+    st.dataframe(gdp_growth_mod.head(6))
+    
     st.dataframe(data["gdp_growth"].head())
     st.dataframe(data["energy_use"].head())
     
