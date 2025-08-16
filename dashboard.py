@@ -384,7 +384,7 @@ with data_analysis:
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig)
 
-#Interactive graph showing correlation coefficient
+    #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
     st.markdown("The graph below describes the correlation between Mexico's CO₂ emissions and a specific indicator.")
     CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
@@ -392,10 +392,10 @@ with data_analysis:
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     scaled_mex = wide_mex.copy()
     st.dataframe(scaled_mex)
-    for col in scaled_mex.columns:
-        scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
+        for col in scaled_mex.columns:
+            scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
 
-#all available indicators except emissions
+    #all available indicators except emissions
     indicators = [col for col in scaled_mex.columns if col != "Emissions"]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
@@ -411,6 +411,7 @@ with data_analysis:
     sns.regplot(df_clean, x="Emissions_scaled", y="Indicator_scaled",
         scatter_kws={"color": "black", "s": 15},
         line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
+    
     ax.set_title(f"Mexico CO₂ Emissions vs {choice} (Scaled)", fontsize=16)
     ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
     ax.set_ylabel(f"Scaled {choice}", fontsize=14)
