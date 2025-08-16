@@ -10,7 +10,7 @@ import numpy as np
 @st.cache_data
 def load_data():
     url1 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/yearly_co2_emissions_1000_tonnes%20(1).xlsx"
-    CO2_emissions = pd.read_excel(url1)
+    co2_emissions = pd.read_excel(url1)
 
     url2 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/gdp_per_capita_yearly_growth.xlsx"
     gdp_growth = pd.read_excel(url2)
@@ -25,7 +25,7 @@ def load_data():
     mex_temp = pd.read_excel(url5)
     mex_temp = mex_temp.melt(id_vars=['code', 'name'], var_name='Date', value_name='Temperature')
 
-    return CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
+    return co2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
 
 
 #creates main section
@@ -91,7 +91,7 @@ with data_visual:
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celcusis) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
     st.header("Data Import")
-
+    data=load_data()
     st.table(gdp_growth)
     st.table(energy_use)
     st.header("Data Visualization")
