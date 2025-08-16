@@ -397,7 +397,11 @@ indicators = [c for c in wide.columns if c != "Emissions"]
 choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
 if choice in wide.columns:
-    df_compare = wide[['Emissions', choice]].dropna()
+    df_compare = wide[['Emissions', choice]].copy()
+
+    # make sure values are numeric and finite
+    df_compare = df_compare.apply(pd.to_numeric, errors='coerce')
+    df_compare = df_compare.replace([np.inf, -np.inf], np.nan).dropna()
 
     if len(df_compare) < 2:
         st.warning(f"Not enough overlapping data to compare Emissions with {choice}.")
@@ -405,16 +409,17 @@ if choice in wide.columns:
         x = df_compare['Emissions'].values
         y = df_compare[choice].values
 
-        # check for variance
-        if np.std(x) == 0 or np.std(y) == 0:
-            st.warning(f"{choice} has no variation, correlation is undefined.")
+        if np.std(y) == 0 or np.std(x) == 0:
             r = np.nan
         else:
-            r = np.corrcoef(x, y)[0, 1]
+            r = float(np.corrcoef(x, y)[0, 1])
 
-        st.write(f"**Correlation coefficient between Emissions and {choice}: {r if not np.isnan(r) else 'undefined'}**")
+        if np.isnan(r):
+            st.warning(f"Correlation between Emissions and {choice} is undefined (no variation).")
+        else:
+            st.write(f"**Correlation coefficient between Emissions and {choice}: {r:.2f}**")
 
-        # regression line (only if valid)
+        # scatter + regression
         fig_corr, ax = plt.subplots(figsize=(8, 6))
         ax.scatter(x, y, s=15, color='black')
 
