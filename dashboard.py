@@ -299,19 +299,19 @@ with data_visual:
     'Temperature': 'Temperature (Celsius)'
     })
 
-def smooth_plot(data, color, **kwargs):
-    x = data['Year']
-    y = data['Value']
-    y_smooth = y.rolling(window=min(5, len(y)), center=True, min_periods=1).mean()
-    plt.plot(x, y_smooth, color='blue', linewidth=2)
-    plt.scatter(x, y, s=15, color='black')
+    def smooth_plot(data, color, **kwargs):
+        x = data['Year']
+        y = data['Value']
+        y_smooth = y.rolling(window=min(5, len(y)), center=True, min_periods=1).mean()
+        plt.plot(x, y_smooth, color='blue', linewidth=2)
+        plt.scatter(x, y, s=15, color='black')
 
-gr = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
-                  sharex=True, sharey=False, height=4, aspect=2)
-gr.map_dataframe(smooth_plot, color='blue')
-gr.set_titles(row_template="{row_name}", size=14)
-gr.set_axis_labels("Year", "")
-st.pyplot(gr.fig)
+    gr = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
+                      sharex=True, sharey=False, height=4, aspect=2)
+    gr.map_dataframe(smooth_plot, color='blue')
+    gr.set_titles(row_template="{row_name}", size=14)
+    gr.set_axis_labels("Year", "")
+    st.pyplot(gr.fig)
 
 
 with data_analysis:
