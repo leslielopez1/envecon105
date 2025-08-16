@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 #import seaborn as sns
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #import matplotlib.image as mpimg
 #import matplotlib.cm as cm
 #loadingdata
@@ -32,6 +32,7 @@ def load_data():
         "mex_temp": mex_temp
     }
     data = load_data()
+
 #creates main section
 header = st.container()
 intro = st.container()
@@ -41,7 +42,7 @@ data_analysis = st.container()
 
 #define the content of each section below: 
 with header: 
-    st.title("Mexico's CO\u2082 Emissions and Associations over Time")
+    st.title("Exploring Mexico's CO\u2082 Emissions and Associations over Time")
 
 with intro:
     st.header("Motivation")
@@ -73,7 +74,7 @@ Measurements:
 - **GDP per capita**: year over year percentage change in economic output per person- how quicly the average wealth level grows
 - **Energy per person**: proxy for overall energy consumption, amount of energy used by an individual annually
 - **Disasters**: yearly rate of natural disaster events
-- **Temperature**: yearly mean temperature (in celsusis)''')
+- **Temperature**: yearly mean temperature (in celsius)''')
 #Limitations:
     st.header("Limitations")
     st.markdown('''Including CO2 emissions, the following data is a collection of different datasets which may be influenced by CO2 emissions or associated. 
@@ -91,7 +92,8 @@ with data_visual:
 | CO2 emissions                                | 1751–2014   | Gapminder | [CDIAC](https://cdiac.ess-dive.lbl.gov/) | CO2 emissions in tonnes or metric tons (≈ 2,204.6 pounds) per person by country                                                                     | NA       |
 | GDP per capita (percent yearly growth)       | 1801–2019   | Gapminder | [World Bank](https://www.worldbank.org/) | Gross Domestic Product (overall measure of a nation's economic health) per person by country                                                       | NA       |
 | Energy use per person                        | 1960–2015   | Gapminder | [World Bank](https://www.worldbank.org/) | Use of primary energy before transformation to other end-use fuels, by country                                                                      | NA       |
-| Mexico Natural Disasters                         | 2000–2025  | Humanitarian Data Exchange  | [EM-DAT](https://www.emdat.be/)   | Frequency and impact of natural disasters in Mexico, includes: – Droughts – Floods  – Freezes – Severe Storms – Tropical Cyclones – Wildfires | EM-DAT, CRED / UCLouvain, 2025, Brussels, Belgium, www.emdat.be|
+| Mexico Natural Disasters                         | 2000–2025  | Humanitarian Data Exchange  | [EM-DAT](https://www.emdat.be/)   | Frequency and impact of natural disasters in Mexico, includes:<br>
+– Droughts <br> – Floods <br> – Freezes <br>– Severe Storms <br>– Tropical Cyclones <br>– Wildfires | EM-DAT, CRED / UCLouvain, 2025, Brussels, Belgium, www.emdat.be|
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celcusis) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
     st.header("Data Import")
