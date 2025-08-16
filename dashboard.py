@@ -393,7 +393,8 @@ with data_analysis:
     wide_mex = wide_mex.rename(columns={'Temperature (Celsius)': 'Temperature', 'CO2 Emissions (Metric Tons)': 'Emissions'})
     scaled_mex = wide_mex.copy()
     #all available indicators except emissions
-    st.write("Columns available in data:", scaled_mex.columns.tolist())
+    st.write("Disasters column stats:")
+    st.write(scaled_mex['Disasters'].describe())
     indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
     
