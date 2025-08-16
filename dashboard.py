@@ -248,7 +248,7 @@ with data_visual:
     st.markdown("""This tile plot shows the change over time until 2014 in emisssions produced within the top 10 countries compared to Mexico. 
     As a developing country, Mexico started to produce more emissions in the 20th century and is now working to not increase their levels.""") 
     #code for third graph
-     filtered = data_long[
+    filtered = data_long[
         (data_long['Country'].isin(top10_countries)) &
         (data_long['Indicator'] == 'Emissions') &
         (data_long['Year'] >= 1900)
@@ -273,7 +273,7 @@ with data_visual:
     st.markdown("""This type of data visualization method presents how the different indicators in the dataset change through time and how they compare with each other. 
     These plots demonstrates that each type of data spans a different time span.""")
     #code for 4th graph
-     mex_indi_filtered = data_long[~data_long['Indicator'].isin(['Disasters', 'Temperature'])]
+    mex_indi_filtered = data_long[~data_long['Indicator'].isin(['Disasters', 'Temperature'])]
     grid = sns.FacetGrid(mex_indi_filtered, row="Indicator", col="Region",
                          margin_titles=True, sharex=True, sharey=False,
                          height=3, aspect=1.5)
