@@ -6,7 +6,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.cm as cm
-import statsmodels
 #loadingdata
 @st.cache_data
 def load_data():
