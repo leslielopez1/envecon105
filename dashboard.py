@@ -323,3 +323,35 @@ with data_analysis:
     In this case, a correlatation coefficient of about 0.93 indicates a strong correlation between CO2 emissions and temperature. 
     However, a linear relationship might not be the best way to capture the relationship, since a correlation does not impy causation.""")
     st.subheader("3. Scaled scatter plot showing the correlation between emissions and temperature in Mexico")
+
+
+    st.subheader("Interactive Correlation Explorer")
+    #all available indicators except emissions
+    indicators = data_long['Indicator'].unique().tolist()
+    if "Emissions" in indicators:
+        indicators.remove("Emissions")
+
+    choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
+
+    # pivot wide for comparison
+    wide_df = data_long[data_long['Country'] == 'Mexico'].pivot(index='Year', columns='Indicator', values='Value')
+
+    if choice in wide_df.columns and 'Emissions' in wide_df.columns:
+        x = wide_df['Emissions']
+        y = wide_df[choice]
+        r = np.corrcoef(x, y)[0, 1]
+
+        st.write(f"**Correlation coefficient between CO₂ Emissions and {choice}: {r:.2f}**")
+
+    # plot
+        fig_corr, ax_corr = plt.subplots(figsize=(8, 6))
+        ax_corr.scatter(x, y, s=15, color='black')
+
+        coeffs = np.polyfit(x, y, deg=1)
+        y_pred = np.polyval(coeffs, x)
+        ax_corr.plot(x, y_pred, color='blue', linewidth=2)
+
+        ax_corr.set_xlabel("CO₂ Emissions", fontsize=12)
+        ax_corr.set_ylabel(choice, fontsize=12)
+        ax_corr.set_title(f"CO₂ Emissions vs {choice} (Mexico)", fontsize=16)
+        st.pyplot(fig_corr)
