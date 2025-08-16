@@ -391,7 +391,7 @@ CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long[
     (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
 wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
 scaled_mex = wide_mex.copy()
-
+st.dataframe(scaled_mex)
 for col in scaled_mex.columns:
     scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
 
@@ -402,6 +402,7 @@ choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", in
 df_clean = scaled_mex[['Emissions', choice]].dropna()
 df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
 df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
+st.dataframe(df_clean)
 
 r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
 st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
@@ -418,6 +419,6 @@ ax.tick_params(axis='y', labelsize=12)
 ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
 st.pyplot(fig_corr)
 
-st.write(scaled_mex['Emissions'].tolist())
-st.write(scaled_mex[choice].tolist())
+st.dataframe(scaled_mex['Emissions'])
+st.dataframe(scaled_mex[choice])
 
