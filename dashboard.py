@@ -287,30 +287,37 @@ with data_visual:
     st.markdown("""These distinct scatter plots show that there are similar patterns of CO2 emission levels and average annual temperatures. 
     There seems to be an association between high CO2 emissions and the rise of temperatures in Mexico.""")
     #code for 5th graph
-    CO2_temp_mex_facet = data_long[
-    (data_long['Country'] == 'Mexico') &
-    (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
-    (data_long['Indicator'].isin(['Emissions', 'Temperature']))
-    ].drop(columns="Label").copy()
+    #Filter data to be between 1980 and 2014
+    CO2_temp_mex_facet = data_long[(data_long['Country'] == 'Mexico') &
+                    (data_long['Year'] >= 1980) &
+                    (data_long['Year'] <= 2014) &
+                    (data_long['Indicator'].isin(['Emissions', 'Temperature']))].drop(columns="Label").copy()
 
+    #rename indicators to formal names 'CO2 Emissions (Metric Tons)' and 'Temperature (Celsius)'
     CO2_temp_mex_facet['Indicator'] = CO2_temp_mex_facet['Indicator'].replace({
     'Emissions': 'CO2 Emissions (Metric Tons)',
-    'Temperature': 'Temperature (Celsius)'
-    })
+    'Temperature': 'Temperature (Celsius)'})
 
-def smooth_plot(data, **kwargs):
-    x = data['Year']
-    y = data['Value']
-    y_smooth = y.rolling(window=5, center=True, min_periods=1).mean()
-    plt.plot(x, y_smooth, color='blue', linewidth=2)
-    plt.scatter(x, y, s=15, color='black')
+    #create a faceted plot; 2 graphs for each indicator
+    g = sns.FacetGrid(CO2_temp_mex_facet,
+        row='Indicator', sharex=True, sharey=False,
+        height=4, aspect=2)
 
-    g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
-                  sharex=True, sharey=False, height=4, aspect=2)
-    g.map_dataframe(smooth_plot, color='blue')
-    g.set_titles(row_template="{row_name}", size=14)
-    g.set_axis_labels("Year", "")
+    g.map_dataframe(
+        sns.regplot,
+        x='Year', y='Value', lowess=True,
+        scatter_kws={'s': 15, 'color': 'black'},
+        line_kws={'color': 'blue', 'linewidth': 2},
+        ci=None)
+
+    #remove the y-axis label
+    for ax in g.axes.flat:
+        ax.set_ylabel('')
+
+    g.set_titles(row_template='{row_name}', size=14)
     plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
+    sns.despine()
+    plt.tight_layout()
     st.pyplot(g.fig)
 
 
