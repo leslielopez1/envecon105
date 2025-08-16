@@ -121,10 +121,45 @@ with data_visual:
     #label
     gdp_growth_mod["Label"]= "GDP Growth/Capita (%)"
     st.dataframe(gdp_growth_mod.head(6))
+
+    st.subheader("Energy Use per person")
+    energy_use = data["energy_use"]
+    energy_use_mod = pd.melt(energy_use, id_vars = ['country'], var_name = 'Year', value_name = 'Energy')
+    energy_use_mod["Year"] = pd.to_numeric(energy_use_mod["Year"], errors = 'coerce')
+    energy_use_mod = energy_use_mod.rename(columns={"country": "Country"})
+    energy_use_mod["Label"] = "Energy Use (kg, oil-eq./capita)"
+    st.dataframe(energy_use_mod.head())
     
-    st.dataframe(data["gdp_growth"].head())
-    st.dataframe(data["energy_use"].head())
-    
+    st.subheader("Mexico Data: Natural Disasters and Annual Temperatures")
+    st.subheader("Disasters")
+    mex_disaster = data["mex_disaster"]
+    #find the total number of disasters occuring each year
+    disaster_type = mex_disaster[["Year", "Country", "Disaster Type", "Total Events"]].groupby("Year")["Total Events"].sum().reset_index()
+    disaster_type['Year'] = pd.to_numeric(disaster_type['Year'], errors='coerce')
+    #rename 'total event' to 'value'
+    mex_disaster_mod = disaster_type.rename(columns={"Total Events": "Value"})
+    #create 'label', 'indicator', and 'country' labels and reorder columns
+    mex_disaster_mod["Label"] = "Number of Disasters"
+    mex_disaster_mod.insert(1, "Indicator", "Disasters")
+    mex_disaster_mod.insert(1, 'Country', 'Mexico')
+    st.dataframe(mex_disaster_mod)
+    st.subheader("Temperature")
+    mex_temp = data["mex_temp"]
+    mex_temp['Date'] = mex_temp['Date'].astype(str).str[:4]
+    mex_temp['Country'] = 'Mexico'
+    #rename 'date' to 'year' and convert to numeric
+    mex_temp = mex_temp.rename(columns={'Date': 'Year'})
+    mex_temp['Year'] = pd.to_numeric(mex_temp['Year'], errors='coerce')
+    #rename 'temperature' to 'value
+    mex_temp = mex_temp.rename(columns={'Temperature': 'Value'})
+    #create 'indicator' variable
+    mex_temp['Indicator'] = 'Temperature'
+    #create 'label' variable
+    mex_temp['Label'] = 'Temperature (Celsius)'
+    #reorder columns
+    mex_temp_mod = mex_temp[['Year', 'Country', 'Indicator', 'Value', 'Label']]
+    st.dataframe(mex_temp_mod)
+
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
