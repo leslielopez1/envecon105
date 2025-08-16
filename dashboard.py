@@ -357,7 +357,7 @@ with data_analysis:
 
     ax.set_xlabel('CO2 Emissions (Metric Tons)', fontsize=12)
     ax.set_ylabel('Temperature (Celsius)', fontsize=12)
-    ax.set_title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
+    ax.set_title("Mexico CO₂ Emissions and Temperature (1980–2014)", fontsize=16, pad=10)
     st.pyplot(fig)
 
     #calculate correlation coefficient
@@ -375,7 +375,7 @@ with data_analysis:
             scatter_kws={"color": "black", "s": 15},
             line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
 
-    ax.set_title(r"Mexico $CO_2$ Emissions and Temperature (1980–2014)", fontsize=16)
+    ax.set_title("Mexico CO₂ Emissions and Temperature (1980–2014)", fontsize=16)
     ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
     ax.set_ylabel("Scaled Temperature (Celsius)", fontsize=14)
     ax.tick_params(axis='x', labelsize=12)
@@ -387,33 +387,36 @@ with data_analysis:
     #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
     st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
+    scaled_mex = wide_mex.copy()
     #all available indicators except emissions
-    indicators = data_long['Indicator'].unique().tolist()
-    if "Emissions" in indicators:
-        indicators.remove("Emissions")
-
+    indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
+    
+    scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
+    scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
 
-    # pivot wide for comparison
-    wide_df = data_long[data_long['Country'] == 'Mexico'].pivot(index='Year', columns='Indicator', values='Value')
+    r = np.corrcoef(scaled_mex['Emissions_scaled'], scaled_mex['Indicator_scaled'])[0,1]
+    st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
-    if choice in wide_df.columns and 'Emissions' in wide_df.columns:
-       df_compare = wide_df[['Emissions', choice]].dropna() 
+    fig_corr, ax = plt.subplots(figsize=(8, 6))
+    sns.regplot(scaled_mex, x="Emissions_scaled", y="Indicator_scaled",
+            scatter_kws={"color": "black", "s": 15},
+            line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
+    ax.set_title(f"Mexico CO₂ Emissions vs {choice} (Scaled)", fontsize=16)
+    ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
+    ax.set_ylabel(f"Scaled {choice}", fontsize=14)
+    ax.tick_params(axis='x', labelsize=12)
+    ax.tick_params(axis='y', labelsize=12)
+    ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+    st.pyplot(fig_corr)
+    
+   # ax_corr.scatter(x, y, s=15, color='black')
 
-    if len(df_compare) > 1:  
-        x = df_compare['Emissions']
-        y = df_compare[choice]
-        r = np.corrcoef(x, y)[0, 1]
-        st.write(f"**Correlation coefficient between CO₂ Emissions and {choice}: {r:.2f}**")
+     #   coeffs = np.polyfit(x, y, deg=1)
+      #  y_pred = np.polyval(coeffs, x)
+      #  ax_corr.plot(x, y_pred, color='blue', linewidth=2)
 
-        fig_corr, ax_corr = plt.subplots(figsize=(8, 6))
-        ax_corr.scatter(x, y, s=15, color='black')
-
-        coeffs = np.polyfit(x, y, deg=1)
-        y_pred = np.polyval(coeffs, x)
-        ax_corr.plot(x, y_pred, color='blue', linewidth=2)
-
-        ax_corr.set_xlabel("CO₂ Emissions", fontsize=12)
-        ax_corr.set_ylabel(choice, fontsize=12)
-        ax_corr.set_title(f"CO₂ Emissions vs {choice} (Mexico)", fontsize=16)
-        st.pyplot(fig_corr)
+       # ax_corr.set_xlabel("CO₂ Emissions", fontsize=12)
+       # ax_corr.set_ylabel(choice, fontsize=12)
+       # ax_corr.set_title(f"CO₂ Emissions vs {choice} (Mexico)", fontsize=16)
+       # st.pyplot(fig_corr)
