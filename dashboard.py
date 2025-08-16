@@ -27,7 +27,7 @@ def load_data():
 
     return CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
 
-CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp = load_data()
+
 #creates main section
 header = st.container()
 intro = st.container()
