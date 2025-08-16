@@ -384,51 +384,39 @@ with data_analysis:
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig)
 
-    #Interactive graph showing correlation coefficient
+#Interactive graph showing correlation coefficient
 st.subheader("Interactive Correlation Explorer")
 st.markdown("The graph below describes the correlation between Mexico's CO₂ emissions and a specific indicator.")
+CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
+    (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
+wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
+scaled_mex = wide_mex.copy()
+for col in scaled_mex.columns:
+    scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
 
-# build wide table
-wide = data_long[
-    (data_long['Country'] == 'Mexico') & (data_long['Year'].between(1980, 2014))
-].pivot(index="Year", columns="Indicator", values="Value")
-
-indicators = [c for c in wide.columns if c != "Emissions"]
+#all available indicators except emissions
+indicators = [col for col in scaled_mex.columns if col != "Emissions"]
 choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
-if choice in wide.columns:
-    df_compare = wide[['Emissions', choice]].copy()
+df_clean = scaled_mex[['Emissions', choice]].dropna()
+df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
+df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
 
-    # make sure values are numeric and finite
-    df_compare = df_compare.apply(pd.to_numeric, errors='coerce')
-    df_compare = df_compare.replace([np.inf, -np.inf], np.nan).dropna()
 
-    if len(df_compare) < 2:
-        st.warning(f"Not enough overlapping data to compare Emissions with {choice}.")
-    else:
-        x = df_compare['Emissions'].values
-        y = df_compare[choice].values
+r = np.corrcoef(df_clean['Emissions_scaled'], df_clean['Indicator_scaled'])[0,1]
+st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
-        if np.std(y) == 0 or np.std(x) == 0:
-            r = np.nan
-        else:
-            r = float(np.corrcoef(x, y)[0, 1])
+fig_corr, ax = plt.subplots(figsize=(8, 6))
+sns.regplot(scaled_mex, x="Emissions_scaled", y="Indicator_scaled",
+        scatter_kws={"color": "black", "s": 15},
+        line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
+ax.set_title(f"Mexico CO₂ Emissions vs {choice} (Scaled)", fontsize=16)
+ax.set_xlabel("Scaled Emissions (Metric Tonnes)", fontsize=14)
+ax.set_ylabel(f"Scaled {choice}", fontsize=14)
+ax.tick_params(axis='x', labelsize=12)
+ax.tick_params(axis='y', labelsize=12)
+ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+st.pyplot(fig_corr)
 
-        if np.isnan(r):
-            st.warning(f"Correlation between Emissions and {choice} is undefined (no variation).")
-        else:
-            st.write(f"**Correlation coefficient between Emissions and {choice}: {r:.2f}**")
 
-        # scatter + regression
-        fig_corr, ax = plt.subplots(figsize=(8, 6))
-        ax.scatter(x, y, s=15, color='black')
 
-        if not np.isnan(r):
-            m, b = np.polyfit(x, y, deg=1)
-            ax.plot(x, m*x + b, color='blue', linewidth=2)
-
-        ax.set_xlabel("CO₂ Emissions (Metric Tons)")
-        ax.set_ylabel(choice)
-        ax.set_title(f"Mexico CO₂ Emissions vs {choice} (1980–2014)")
-        ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
-        st.pyplot(fig_corr)
