@@ -392,7 +392,7 @@ with data_analysis:
     (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     scaled_mex = wide_mex.copy()
-    st.dataframe(scaled_mex)
+
     for col in scaled_mex.columns:
         scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
 
@@ -403,11 +403,8 @@ with data_analysis:
     df_clean = scaled_mex[['Emissions', choice]].dropna()
     df_clean['Emissions_scaled'] = (df_clean['Emissions'] - df_clean['Emissions'].mean()) / df_clean['Emissions'].std()
     df_clean['Indicator_scaled'] = (df_clean[choice] - df_clean[choice].mean()) / df_clean[choice].std()
-    if choice == "Disasters":
-        r = -0.87
-    else: 
-        r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
     
+    r = np.corrcoef(df_clean['Emissions'], df_clean['Indicator'])[0,1]
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
     fig_corr, ax = plt.subplots(figsize=(8, 6))
