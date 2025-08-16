@@ -303,9 +303,9 @@ with data_visual:
     g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                   sharex=True, sharey=False, height=4, aspect=2)
     def smooth_line(x, y, **kwargs):
-    if len(y) > 5:  # need enough points
-        y_smooth = savgol_filter(y, 7, 3)  # window=7, polyorder=3
-        plt.plot(x, y_smooth, color='blue', linewidth=2)
+        if len(y) > 5:  # need enough points
+            y_smooth = savgol_filter(y, 7, 3)  # window=7, polyorder=3
+            plt.plot(x, y_smooth, color='blue', linewidth=2)
     plt.scatter(x, y, s=15, color='black')
 
     g.map_dataframe(smooth_line, 'Year', 'Value')
