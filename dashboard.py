@@ -133,6 +133,12 @@ with data_visual:
     
     st.subheader("Mexico Data: Natural Disasters and Annual Temperatures")
     st.subheader("Disasters")
+    st.markdown('''The original table had additional data that is not relevant for this study including the Total Affected, Total Damage, and other variables. The columns of interest are Year and Total Events.
+    The following was done to clean the data.
+    - Find the total disasters occuring in a year and label as Value
+    - Add a Country variable
+    - Add an Indicator variable
+    - Add a Label variable''')
     mex_disaster = data["mex_disaster"]
     #find the total number of disasters occuring each year
     disaster_type = mex_disaster[["Year", "Country", "Disaster Type", "Total Events"]].groupby("Year")["Total Events"].sum().reset_index()
@@ -146,6 +152,11 @@ with data_visual:
     st.dataframe(mex_disaster_mod)
     
     st.subheader("Temperature")
+    st.mark_down("The following was done to clean the data.
+    - Date & renamed to Year
+    - Add a country variable
+    - Add a Indicator variable
+    - Add a Label Variable''') 
     mex_temp = data["mex_temp"]
     mex_temp['Date'] = mex_temp['Date'].astype(str).str[:4]
     mex_temp['Country'] = 'Mexico'
@@ -376,7 +387,7 @@ with data_analysis:
 
     #Interactive graph showing correlation coefficient
     st.subheader("Interactive Correlation Explorer")
-    st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator."
+    st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
     #all available indicators except emissions
     indicators = data_long['Indicator'].unique().tolist()
     if "Emissions" in indicators:
