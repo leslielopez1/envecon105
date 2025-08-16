@@ -65,7 +65,10 @@ with data_visual:
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
     Mexico's emissions have risen slightly since the year 2000.""")
     st.subheader("2. Top 10 Emissions-producing Countries in 2010 (1900-2014)")
+    st.markdown("""This graph shows that among the top 10 emission producing countries in 2010, Mexico lays relatively low compared to the others, ranking #13 globally.""")
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
+    st.markdown("""This tile plot shows the change over time until 2014 in emisssions produced within the top 10 countries compared to Mexico. 
+    As a developing country, Mexico started to produce more emissions in the 20th century and is now working to not increase their levels.""") 
     st.subheader("4. Faceted Plot: Indicator Comparison of Mexico and the Rest of the World")
     st.markdown("""This type of data visualization method presents how the different indicators in the dataset change through time and how they compare with each other. 
     These plots demonstrates that each type of data spans a different time span.""")
