@@ -116,7 +116,9 @@ def getgraph1():
 
     # Display in Streamlit
     st.pyplot(fig)
-
+    return getgraph1
+datatable1= getgraph1()
+st.table(getgraph1)
     st.subheader("2. Top 10 Emissions-producing Countries in 2010 (1900-2014)")
     st.markdown("""This graph shows that among the top 10 emission producing countries in 2010, Mexico lays relatively low compared to the others, ranking #13 globally.""")
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
