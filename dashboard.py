@@ -26,7 +26,7 @@ def load_data():
     mex_temp = mex_temp.melt(id_vars=['code', 'name'], var_name='Date', value_name='Temperature')
 
     return co2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
-
+import=load_data()
 
 #creates main section
 header = st.container()
@@ -91,7 +91,7 @@ with data_visual:
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celcusis) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
     st.header("Data Import")
-    data=load_data()
+    st.table(load_data)
     st.table(gdp_growth)
     st.table(energy_use)
     st.header("Data Visualization")
