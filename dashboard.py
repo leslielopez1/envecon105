@@ -60,10 +60,42 @@ Measurements:
 
 with data_visual: 
     st.header("What is the Data?")
+    url = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/yearly_co2_emissions_1000_tonnes%20(1).xlsx"
+    data_long = pd.read_excel(url)
+
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
     Mexico's emissions have risen slightly since the year 2000.""")
+filtered = data_long[data_long['Indicator'] == 'Emissions']
+    filtered_mex = data_long[
+        (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')
+    ]
+
+    summary_mex = filtered_mex.groupby('Year', as_index=False)['Value'].sum()
+    summary_mex.rename(columns={'Value': 'Emissions'}, inplace=True)
+
+    summary = filtered.groupby(['Year', 'Country'], as_index=False, observed=True)['Value'].sum()
+    summary.rename(columns={'Value': 'Emissions'}, inplace=True)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    for country, group_data in summary.groupby('Country', observed=True):
+        ax.plot(group_data['Year'], group_data['Emissions'], color='black', alpha=0.4)
+
+    ax.plot(summary_mex['Year'], summary_mex['Emissions'], label='Mexico', color='blue')
+
+    ax.set_xlabel('Year', fontsize=12)
+    ax.set_ylabel('Emissions (Metric Tonnes)', fontsize=12)
+    ax.set_title(r"Country $CO_2$ Emissions per year (1751-2014)", fontsize=17)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.legend(title='Country', loc="center left", bbox_to_anchor=(1, 0.5))
+    plt.grid()
+    plt.figtext(0.05,0.01, "Limited to reporting countries", fontsize=12)
+
+    # Display in Streamlit
+    st.pyplot(fig)
+
     st.subheader("2. Top 10 Emissions-producing Countries in 2010 (1900-2014)")
     st.markdown("""This graph shows that among the top 10 emission producing countries in 2010, Mexico lays relatively low compared to the others, ranking #13 globally.""")
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
