@@ -309,7 +309,7 @@ with data_visual:
 
     gr = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                       sharex=True, sharey=False, height=4, aspect=2)
-    gr.map_dataframe()regression_plot)
+    gr.map_dataframe(regression_plot)
     gr.set_titles(row_template="{row_name}", size=14)
     gr.set_axis_labels("Year", "")
     st.pyplot(gr.fig)
