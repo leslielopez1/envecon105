@@ -407,7 +407,7 @@ r = np.corrcoef(df_clean['Emissions_scaled'], df_clean['Indicator_scaled'])[0,1]
 st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
 
 fig_corr, ax = plt.subplots(figsize=(8, 6))
-sns.regplot(scaled_mex, x="Emissions_scaled", y="Indicator_scaled",
+sns.regplot(df_clean, x="Emissions_scaled", y="Indicator_scaled",
         scatter_kws={"color": "black", "s": 15},
         line_kws={"color": "blue", "linewidth": 2}, ci=None, ax=ax)
 ax.set_title(f"Mexico CO₂ Emissions vs {choice} (Scaled)", fontsize=16)
