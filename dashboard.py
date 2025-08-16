@@ -1,4 +1,5 @@
 #import packages
+from scipy.signal import savgol_filter
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -301,8 +302,13 @@ with data_visual:
     #Build FacetGrid but avoid regplot
     g = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                   sharex=True, sharey=False, height=4, aspect=2)
-    g.map_dataframe(plt.scatter, 'Year', 'Value', s=15, color='black')
-    g.map_dataframe(sns.lineplot, x='Year', y='Value', color='blue')
+    def smooth_line(x, y, **kwargs):
+    if len(y) > 5:  # need enough points
+        y_smooth = savgol_filter(y, 7, 3)  # window=7, polyorder=3
+        plt.plot(x, y_smooth, color='blue', linewidth=2)
+    plt.scatter(x, y, s=15, color='black')
+
+    g.map_dataframe(smooth_line, 'Year', 'Value')
     g.set_titles(row_template="{row_name}", size=14)
     plt.suptitle("Mexico Emissions and Temperatures (1980–2014)", fontsize=16)
     st.pyplot(g.fig)
