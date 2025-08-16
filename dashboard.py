@@ -389,7 +389,7 @@ with data_analysis:
     st.markdown("The graph below describes the correlation between Mexico's CO2 emissions and a specific indicator.")
     scaled_mex = wide_mex.copy()
     #all available indicators except emissions
-    st.write("Columns available in data:", wide_mex.columns.tolist())
+    st.write("Columns available in data:", CO2_temp_mex_facet.columns.tolist())
     indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
     
