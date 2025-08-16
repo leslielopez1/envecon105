@@ -298,13 +298,14 @@ with data_visual:
     'Emissions': 'CO2 Emissions (Metric Tons)',
     'Temperature': 'Temperature (Celsius)'
     })
-
-    def smooth_plot(data, color, **kwargs):
+    def regression_plot(data, **kwargs):
         x = data['Year']
         y = data['Value']
-        y_smooth = y.rolling(window=min(5, len(y)), center=True, min_periods=1).mean()
-        plt.plot(x, y_smooth, color='blue', linewidth=2)
         plt.scatter(x, y, s=15, color='black')
+        coeffs = np.polyfit(x, y, deg=1)  # slope & intercept
+        y_pred = np.polyval(coeffs, x)
+        plt.plot(x, y_pred, color='blue', linewidth=2)
+
 
     gr = sns.FacetGrid(CO2_temp_mex_facet, row='Indicator',
                       sharex=True, sharey=False, height=4, aspect=2)
