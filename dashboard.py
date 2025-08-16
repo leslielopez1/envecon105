@@ -1,7 +1,7 @@
 #import packages
 import streamlit as st
 import pandas as pd
-import  penpyxl
+import openpyxl
 import numpy as np
 #import seaborn as sns
 #import matplotlib.pyplot as plt
