@@ -135,10 +135,10 @@ with data_visual:
     st.subheader("Disasters")
     st.markdown('''The original table had additional data that is not relevant for this study including the Total Affected, Total Damage, and other variables. The columns of interest are Year and Total Events.
     The following was done to clean the data.
-    - Find the total disasters occuring in a year and label as Value
-    - Add a Country variable
-    - Add an Indicator variable
-    - Add a Label variable''')
+- Find the total disasters occuring in a year and label as Value
+- Add a Country variable
+- Add an Indicator variable
+- Add a Label variable''')
     mex_disaster = data["mex_disaster"]
     #find the total number of disasters occuring each year
     disaster_type = mex_disaster[["Year", "Country", "Disaster Type", "Total Events"]].groupby("Year")["Total Events"].sum().reset_index()
@@ -153,10 +153,10 @@ with data_visual:
     
     st.subheader("Temperature")
     st.markdown('''The following was done to clean the data.
-    - Date & renamed to Year
-    - Add a country variable
-    - Add a Indicator variable
-    - Add a Label Variable''') 
+- Date & renamed to Year
+- Add a country variable
+- Add a Indicator variable
+- Add a Label Variable''') 
     mex_temp = data["mex_temp"]
     mex_temp['Date'] = mex_temp['Date'].astype(str).str[:4]
     mex_temp['Country'] = 'Mexico'
@@ -342,7 +342,7 @@ with data_analysis:
     st.subheader("2. Calculate the correlatation coefficient for emissions and temperature")
     st.markdown("""The correlation coefficient measures the strenght of a linear relationship between two variables. 
     In this case, a correlatation coefficient of about 0.93 indicates a strong correlation between CO2 emissions and temperature. 
-    However, a linear relationship might not be the best way to capture the relationship, since a correlation does not impy causation.""")
+    However, a linear relationship might not be the best way to capture the relationship, since a correlation does not imply causation.""")
     #plot temperature vs. emissions to show the relationship between them
     fig, ax = plt.subplots(figsize=(8,6))
 
