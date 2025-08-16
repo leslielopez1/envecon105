@@ -31,7 +31,8 @@ def load_data():
         "mex_disaster": mex_disaster,
         "mex_temp": mex_temp
     }
-    data = load_data()
+#creates a dictionary with key=names and value=dataframe
+data = load_data()
 
 #creates main section
 header = st.container()
