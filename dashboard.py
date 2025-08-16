@@ -2,10 +2,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-#import seaborn as sns
-#import matplotlib.pyplot as plt
-#import matplotlib.image as mpimg
-#import matplotlib.cm as cm
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.cm as cm
 #loadingdata
 @st.cache_data
 def load_data():
