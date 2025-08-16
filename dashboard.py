@@ -5,6 +5,28 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 #import matplotlib.image as mpimg
 #import matplotlib.cm as cm
+#loadingdata
+@st.cache_data
+def load_data():
+    url1 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/yearly_co2_emissions_1000_tonnes%20(1).xlsx"
+    CO2_emissions = pd.read_excel(url1)
+
+    url2 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/gdp_per_capita_yearly_growth.xlsx"
+    gdp_growth = pd.read_excel(url2)
+
+    url3 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/energy_use_per_person.xlsx"
+    energy_use = pd.read_excel(url3)
+
+    url4 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/emdat-country-profiles_mex_2025_08_12.xlsx"
+    mex_disaster = pd.read_excel(url4, skiprows=[1])
+
+    url5 = "https://raw.githubusercontent.com/leslielopez1/envecon105/main/cmip6-x0.25_timeseries_tas_timeseries_annual_1950-2014_median_historical_ensemble_all_mean.xlsx"
+    mex_temp = pd.read_excel(url5)
+    mex_temp = mex_temp.melt(id_vars=['code', 'name'], var_name='Date', value_name='Temperature')
+
+    return CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp
+
+CO2_emissions, gdp_growth, energy_use, mex_disaster, mex_temp = load_data()
 
 #creates main section
 header = st.container()
