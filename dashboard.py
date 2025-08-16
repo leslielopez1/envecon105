@@ -91,7 +91,7 @@ with data_visual:
 | Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celcusis) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
 """)
     st.header("Data Import")
-    st.table(CO2_emissions)
+
     st.table(gdp_growth)
     st.table(energy_use)
     st.header("Data Visualization")
