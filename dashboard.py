@@ -112,7 +112,6 @@ with data_visual:
     st.dataframe(CO2_emissions_mod)
 
     st.subheader("Yearly Growth in GDP per Capita")
-    st.markdown("description")
     gdp_growth = data["gdp_growth"]
     gdp_growth_mod = gdp_growth.melt(id_vars=["country"], var_name="year", value_name="GDP")
     #converting year to numeric
