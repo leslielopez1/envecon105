@@ -87,6 +87,7 @@ with data_visual:
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
     Mexico's emissions have risen slightly since the year 2000.""")
+def getgraph1():
     filtered = data_long[data_long['Indicator'] == 'Emissions']
     filtered_mex = data_long[
         (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')
