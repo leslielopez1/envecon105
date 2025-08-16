@@ -82,12 +82,19 @@ Measurements:
 
 with data_visual: 
     st.header("What is the Data?")
-
+    st.markdown("""| Data                                         | Time span   | Source    | Original Source | Description                                                                                                                                         | Citation |
+|----------------------------------------------|-------------|-----------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| CO2 emissions                                | 1751–2014   | Gapminder | [CDIAC](https://cdiac.ess-dive.lbl.gov/) | CO2 emissions in tonnes or metric tons (≈ 2,204.6 pounds) per person by country                                                                     | NA       |
+| GDP per capita (percent yearly growth)       | 1801–2019   | Gapminder | [World Bank](https://www.worldbank.org/) | Gross Domestic Product (overall measure of a nation's economic health) per person by country                                                       | NA       |
+| Energy use per person                        | 1960–2015   | Gapminder | [World Bank](https://www.worldbank.org/) | Use of primary energy before transformation to other end-use fuels, by country                                                                      | NA       |
+| Mexico Natural Disasters                         | 2000–2025  | Humanitarian Data Exchange  | [EM-DAT](https://www.emdat.be/)   | Frequency and impact of natural disasters in Mexico, includes: <br> – Droughts <br> – Floods <br> – Freezes <br> – Severe Storms <br> – Tropical Cyclones <br> – Wildfires | EM-DAT, CRED / UCLouvain, 2025, Brussels, Belgium, www.emdat.be|
+| Temperature                                  | 1950–2014   |  Climate Change Knowledge Portal        | [World Bank](https://climateknowledgeportal.worldbank.org/)                | Mexico National yearly average temperature (in Celcusis) from 1950 to 2014              | “World Bank Climate Change Knowledge Portal.” Worldbank.org, 2021, [climateknowledgeportal.worldbank.org/](https://climateknowledgeportal.worldbank.org/). Accessed 10 Aug. 2025.|
+""")
     st.header("Data Visualization")
     st.subheader("1. Country CO2 Emissions per Year (1751-2014)")
     st.markdown("""This graph shows that Mexico is one of the countries that produces the lowest amount of CO2 emissions compared to the United States, which has dominated as the largest CO2 emission producing country until recently. 
     Mexico's emissions have risen slightly since the year 2000.""")
-def getgraph1():
+def get_graph():
     filtered = data_long[data_long['Indicator'] == 'Emissions']
     filtered_mex = data_long[
         (data_long['Indicator'] == 'Emissions') & (data_long['Country'] == 'Mexico')
