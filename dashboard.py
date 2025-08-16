@@ -337,15 +337,14 @@ with data_analysis:
     wide_df = data_long[data_long['Country'] == 'Mexico'].pivot(index='Year', columns='Indicator', values='Value')
 
     if choice in wide_df.columns and 'Emissions' in wide_df.columns:
-       df_compare = wide_df[['Emissions', choice]].dropna()   # <- drop missing rows
+       df_compare = wide_df[['Emissions', choice]].dropna() 
 
-    if len(df_compare) > 1:   # need at least 2 points
+    if len(df_compare) > 1:  
         x = df_compare['Emissions']
         y = df_compare[choice]
         r = np.corrcoef(x, y)[0, 1]
         st.write(f"**Correlation coefficient between CO₂ Emissions and {choice}: {r:.2f}**")
 
-    # plot
         fig_corr, ax_corr = plt.subplots(figsize=(8, 6))
         ax_corr.scatter(x, y, s=15, color='black')
 
