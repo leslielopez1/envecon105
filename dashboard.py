@@ -213,8 +213,35 @@ with data_visual:
     ax1.legend()
     st.pyplot(fig1)
 
+    
     st.subheader("2. Top 10 Emissions-producing Countries in 2010 (1900-2014)")
     st.markdown("""This graph shows that among the top 10 emission producing countries in 2010, Mexico lays relatively low compared to the others, ranking #13 globally.""")
+    #code for second graph
+    filtered_2010 = filtered[(filtered['Year'] == 2010) & (filtered['Label'] == 'CO2 Emissions (Metric Tons)')].copy()
+    filtered_2010['rank'] = filtered_2010['Value'].rank(method='dense', ascending=False)
+    top10 = filtered_2010[filtered_2010['rank'] <= 10]['Country'].tolist()
+    top10.append('Mexico')
+    top10_countries = list(set(top10))
+
+    filtered_top10 = data_long[
+        (data_long['Country'].isin(top10_countries)) &
+        (data_long['Indicator'] == 'Emissions') &
+        (data_long['Year'] > 1900)
+    ]
+
+    colors = cm.viridis(np.linspace(0, 1, len(top10_countries)))
+    fig2, ax2 = plt.subplots(figsize=(9, 6))
+    for color, country in zip(colors, top10_countries):
+        country_data = filtered_top10[filtered_top10['Country'] == country]
+        ax2.plot(country_data['Year'], country_data['Value'], label=country, color=color)
+
+    plt.title('Ordered by Emissions Produced in 2010', fontsize=12)
+    plt.suptitle('Top 10 Emissions-producing Countries in 2010 (1900–2014)', fontsize=16)
+    ax2.set_xlabel("Year", fontsize=12)
+    ax2.set_ylabel("Emissions (Metric Tons)", fontsize=12)
+    ax2.legend(title='Country', fontsize=8, title_fontsize=10, bbox_to_anchor=(1.05, 1), loc="upper left")
+    fig2.tight_layout()
+    st.pyplot(fig2)
     st.subheader("3. Tile Plot: Top 10 CO2 Emission-producing Countries")
     st.markdown("""This tile plot shows the change over time until 2014 in emisssions produced within the top 10 countries compared to Mexico. 
     As a developing country, Mexico started to produce more emissions in the 20th century and is now working to not increase their levels.""") 
