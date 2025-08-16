@@ -392,13 +392,15 @@ with data_analysis:
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
     wide_mex['Disasters'] = pd.to_numeric(wide_mex['Disasters'], errors='coerce')
     scaled_mex = wide_mex.copy()
+    for col in scaled_mex.columns:
+        scaled_mex[col] = pd.to_numeric(scaled_mex[col], errors='coerce')
     #all available indicators except emissions
-    indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
+    indicators = [col for col in scaled_mex.columns if col != "Emissions"]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
     scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
     scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
-    scaled_mex['Disasters'] = pd.to_numeric(scaled_mex['Disasters'], errors='coerce')
+    
     
     r = np.corrcoef(scaled_mex['Emissions_scaled'], scaled_mex['Indicator_scaled'])[0,1]
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
