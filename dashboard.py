@@ -152,7 +152,7 @@ with data_visual:
     st.dataframe(mex_disaster_mod)
     
     st.subheader("Temperature")
-    st.mark_down("The following was done to clean the data.
+    st.markdown('''The following was done to clean the data.
     - Date & renamed to Year
     - Add a country variable
     - Add a Indicator variable
