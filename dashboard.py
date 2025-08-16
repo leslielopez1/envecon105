@@ -390,18 +390,15 @@ with data_analysis:
     CO2_indic_mex_facet = data_long[(data_long['Country'] == 'Mexico') & (data_long['Year'] >= 1980) & (data_long['Year'] <= 2014) &
     (data_long['Indicator'].isin(['Emissions','Temperature','GDP','Energy','Disasters']))].drop(columns="Label").copy()
     wide_mex = CO2_indic_mex_facet.pivot(index='Year', columns='Indicator', values='Value')
-    wide_mex = wide_mex.rename(columns={'Temperature (Celsius)': 'Temperature', 'CO2 Emissions (Metric Tons)': 'Emissions'})
+    wide_mex['Disasters'] = pd.to_numeric(wide_mex['Disasters'], errors='coerce')
     scaled_mex = wide_mex.copy()
     #all available indicators except emissions
-    st.write("Disasters column stats:")
-    st.write(scaled_mex['Disasters'].describe())
     indicators = [col for col in scaled_mex.columns if col not in ['Emissions', 'Year']]
     choice = st.selectbox("Choose an indicator to compare with CO₂ Emissions:", indicators)
 
     scaled_mex['Emissions_scaled'] = (scaled_mex['Emissions'] - scaled_mex['Emissions'].mean()) / scaled_mex['Emissions'].std()
     scaled_mex['Indicator_scaled'] = (scaled_mex[choice] - scaled_mex[choice].mean()) / scaled_mex[choice].std()
-    scaled_mex['Emissions_scaled'].dropna()
-    scaled_mex['Indicator_scaled'].dropna()
+    scaled_mex['Disasters'] = pd.to_numeric(scaled_mex['Disasters'], errors='coerce')
     
     r = np.corrcoef(scaled_mex['Emissions_scaled'], scaled_mex['Indicator_scaled'])[0,1]
     st.write(f"Correlation coefficient between Emissions and {choice}: **{r:.2f}**")
