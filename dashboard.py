@@ -425,10 +425,10 @@ with data_analysis:
     in comprasion to major developed countries such as the United States or China they rank below, landing at #13 globally. As Mexico continues to develop their industries unless they mitigate their use of fossil fuels, they will continue to rank
     this high or possibly higher. 
 
-    Among other natural variables, CO2 emissions and Temperatures have the strongest correlation at 0.93. This suggest that as CO2 emissions rise, Mexico's average temperture can be predicated to reflect said increase/decrease.
+ Among other natural variables, CO2 emissions and Temperatures have the strongest correlation at 0.93. This suggest that as CO2 emissions rise, Mexico's average temperture can be predicated to reflect said increase/decrease.
     On the other hand, Disasters and CO2 emissions have the weakeast correlation at -0.9. As less disasters occur, we can infer that CO2 emissions will increase and vice-versa. While this study does not contain scienetifc reasoning, outside data
     can provide a more in-depth reasoning for these situation. We want to remind readers that a Pearson Coefficeient (which is what we used in this study) shows correlation, not causation. 
     
-    We urge readers to investigate their own countries and their current emissions- and be conscious of their  personal actions on climate change. 
+We urge readers to investigate their own countries and their current emissions- and be conscious of their  personal actions on climate change. 
     ''')
     
