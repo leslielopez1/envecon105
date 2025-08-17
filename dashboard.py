@@ -421,10 +421,9 @@ with data_analysis:
     st.pyplot(fig_corr)
 
     st.title("Findings")
-    st.markdown(''' Over time, with a developing economy in the 20th century, Mexico's CO2 emissions have increased over time- reaching an all time high in the late 2010's. While they rank high among other developing countries,
-    in comprasion to major developed countries such as the United States or China they rank below, landing at #13 globally. As Mexico continues to develop their industries unless they mitigate their use of fossil fuels, they will continue to rank
-    this high or possibly higher. Among other natural variables, CO2 emissions and Temperatures have the strongest correlation at 0.93. This suggest that as CO2 emissions rise, Mexico's average temperture can be predicated to reflect said increase/decrease.
-    On the other hand, Disasters and CO2 emissions have the weakeast correlation at -0.9. As less disasters occur, we can infer that CO2 emissions will increase and vice-versa. While this study does not contain scienetifc reasoning, outside data
-    can provide a more in-depth reasoning for these situation. We want to remind readers that a Pearson Coefficeient (which is what we used in this study) shows correlation, not causation. 
+    st.markdown(''' Over time, with a developing economy in the 20th century, Mexico's CO2 emissions have increased - reaching an all time high in the late 2010's. While they rank high among other developing countries, Mexico ranks below major developed countries such as the United States or China, specifically, landing at #13 globally. As Mexico continues to develop their industries, unless they mitigate their use of fossil fuels, they will continue to rank
+    this high or possibly higher. Among other natural variables, CO2 emissions and temperatures have the strongest correlation at 0.93. This suggest that as CO2 emissions rise, Mexico's average temperture can be predicated to reflect said increase/decrease.
+    On the other hand, natural disasters and CO2 emissions have the weakeast correlation at -0.9. As less disasters occur, we can infer that CO2 emissions will increase and vice-versa. While this study does not contain scientific reasoning, outside data
+    can provide a more in-depth explanation for these situations. We want to remind readers that a Pearson Coefficient (which is what we used in this study) shows correlation, not causation. 
     We urge readers to investigate their own countries and their current emissions- and be conscious of their  personal actions on climate change. ''')
     
