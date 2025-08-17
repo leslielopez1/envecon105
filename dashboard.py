@@ -419,4 +419,4 @@ with data_analysis:
     ax.tick_params(axis='y', labelsize=12)
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig_corr)
-
+with Study_Conclusion
