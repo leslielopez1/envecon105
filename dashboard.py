@@ -419,7 +419,7 @@ with data_analysis:
     ax.tick_params(axis='y', labelsize=12)
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig_corr)
-with Study_Conclusion:
+
     st.title("Findings")
     st.markdown(''' Over time, with a developing economy in the 20th century, Mexico's CO2 emissions have increased over time- reaching an all time high in the late 2010's. While they rank high among other developing countries,
     in comprasion to major developed countries such as the United States or China they rank below, landing at #13 globally. As Mexico continues to develop their industries unless they mitigate their use of fossil fuels, they will continue to rank
